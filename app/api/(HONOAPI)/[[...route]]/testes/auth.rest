@@ -1,0 +1,38 @@
+### 
+GET http://localhost:3000/api/agendamento/auth/seed
+
+### Testar Login (ajuste o email e senha conforme o que está salvo no banco)
+POST http://localhost:3000/api/agendamento/auth/login
+Content-Type: application/json
+
+{
+  "email": "thalissonvieira@hotmail.com.br",
+  "password": "123123"
+}
+
+### Testar Verificação do Token (copie o token da resposta do login e cole abaixo)
+GET http://localhost:3000/api/agendamento/auth/verifyToken
+
+### testar logout
+POST http://localhost:3000/api/agendamento/auth/logout
+
+
+### testar pedir token do reset de senha
+POST  http://localhost:3000/api/agendamento/auth/ask-reset-password
+Content-Type: application/json
+
+{
+  "email": "thalissonvieira@hotmail.com.br"
+}
+
+### reset dois com token hasheado
+GET http://localhost:3000/api/agendamento/auth/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWxpc3NvbnZpZWlyYUBob3RtYWlsLmNvbS5iciIsImV4cCI6MTc1MTg0MDIyNX0.q38dph6kCDTsRzlyos6Q-Y9GajdpErXfBPMeyDHR5tY
+
+### POST NEW SENHA
+POST http://localhost:3000/api/agendamento/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRoYWxpc3NvbnZpZWlyYUBob3RtYWlsLmNvbS5iciIsImV4cCI6MTc1MTg0MDIyNX0.q38dph6kCDTsRzlyos6Q-Y9GajdpErXfBPMeyDHR5tY",
+  "newPassword": "123123"
+}
