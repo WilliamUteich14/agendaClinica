@@ -12,8 +12,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { FaPen, FaTrash, FaPlusCircle, FaUser, FaUserCog, FaExclamationTriangle } from 'react-icons/fa';
-import { ModalGeneric } from "../components/modalGeneric";
+import { FaPen, FaTrash, FaUser, FaUserCog, FaExclamationTriangle } from 'react-icons/fa';
+import { AddFuncionarioButton } from "./components/configs";
+
 
 interface ApiUser {
   _id?: string;
@@ -34,7 +35,6 @@ interface Funcionario {
 
 export default async function FuncionariosPage() {
   let funcionarios: Funcionario[] = [];
-  let error = false;
 
   try {
     const headerList = headers();
@@ -44,7 +44,7 @@ export default async function FuncionariosPage() {
       headers: {
         Cookie: cookieHeader,
       },
-      next: { revalidate: 60 },
+      cache: 'force-cache',
     });
 
     if (!res.ok) {
@@ -72,7 +72,6 @@ export default async function FuncionariosPage() {
 
   } catch (err) {
     console.error("Erro ao carregar funcionários:", err);
-    error = true;
     return null
   }
 
@@ -91,10 +90,7 @@ export default async function FuncionariosPage() {
               </p>
             </div>
 
-            <button className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
-              <FaPlusCircle className="h-4 w-4" />
-              <span>Adicionar Funcionário</span>
-            </button>
+            <AddFuncionarioButton />
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 text-center">
@@ -103,9 +99,7 @@ export default async function FuncionariosPage() {
             <p className="text-blue-600 mb-4">
               Você ainda não possui funcionários cadastrados em sua clínica.
             </p>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-              Adicionar primeiro funcionário
-            </button>
+            <AddFuncionarioButton />
           </div>
         </div>
       </div>
@@ -126,7 +120,7 @@ export default async function FuncionariosPage() {
             </p>
           </div>
 
-          <ModalGeneric />
+          <AddFuncionarioButton />
         </div>
 
         <div className="hidden md:block overflow-auto rounded-xl border border-teal-100 bg-white shadow-lg w-full">
