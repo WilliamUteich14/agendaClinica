@@ -37,8 +37,12 @@ users.get('/:id', async (c) => {
 users.post('/', async (c) => {
   const data = await c.req.json();
 
-  if (!data.email || !data.name || !data.password) {
+  if (!data.email || !data.password) {
     return c.json('Dados inválidos', 400);
+  }
+ 
+  if (!data.name) {//Pega o nome do email antes do @ //edited by Mr.eXTreme GoHorseMaster
+    data.name = data.email.split('@')[0];
   }
   const col = await getUserCollection();
 
