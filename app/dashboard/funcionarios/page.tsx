@@ -1,6 +1,7 @@
-
 import React from "react";
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
+
+export const dynamic = 'force-dynamic';
 
 import {
   Table,
@@ -11,7 +12,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { FaPen, FaTrash, FaPlusCircle, FaUser, FaUserCog } from 'react-icons/fa';
+import { FaPen, FaTrash, FaPlusCircle, FaUser, FaUserCog, FaExclamationTriangle } from 'react-icons/fa';
+import { ModalGeneric } from "../components/modalGeneric";
 
 interface ApiUser {
   _id?: string;
@@ -31,29 +33,84 @@ interface Funcionario {
 }
 
 export default async function FuncionariosPage() {
-  const cookieStore = cookies();
-  const cookieHeader = cookieStore.toString();
+  let funcionarios: Funcionario[] = [];
+  let error = false;
 
-  const res = await fetch(`${process.env.NEXT_URL}/api/agendamento/users`, {
-    headers: {
-      Cookie: cookieHeader,
-    },
-    cache: "no-store",
-  });
+  try {
+    const headerList = headers();
+    const cookieHeader = (await headerList).get('cookie') || '';
 
-  let apiData: ApiUser[] = [];
-  if (res.ok) {
-    try {
-      apiData = await res.json();
-    } catch {}
+    const res = await fetch(`${process.env.NEXT_URL}/api/agendamento/users`, {
+      headers: {
+        Cookie: cookieHeader,
+      },
+      next: { revalidate: 60 },
+    });
+
+    if (!res.ok) {
+      return (
+        <div className="flex items-center justify-center h-full p-8 text-center">
+          <div className="max-w-md">
+            <h2 className="text-xl font-semibold text-red-600">Erro ao carregar os dados</h2>
+            <p className="text-gray-600 mt-2">
+              Não foi possível carregar a lista de funcionários no momento. Por favor, tente novamente mais tarde.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    const apiData: ApiUser[] = await res.json();
+
+    funcionarios = apiData.map((u) => ({
+      id: (u.id || u._id || u.email) as string,
+      name: u.name ?? u.email.split("@")[0],
+      email: u.email,
+      role: (u.role === "ADMIN" || u.role === "admin") ? "admin" : "staff",
+      active: u.active ?? true,
+    }));
+
+  } catch (err) {
+    console.error("Erro ao carregar funcionários:", err);
+    error = true;
+    return null
   }
-  const funcionarios: Funcionario[] = apiData.map((u) => ({
-    id: (u.id || u._id || u.email) as string,
-    name: u.name ?? u.email.split("@")[0],
-    email: u.email,
-    role: (u.role === "ADMIN" || u.role === "admin") ? "admin" : "staff",
-    active: u.active ?? true,
-  }));
+
+  if (funcionarios.length === 0) {
+    return (
+      <div className="flex-1 bg-gradient-to-br from-blue-50 to-teal-50 p-4 sm:p-6 md:p-8">
+        <div className="mx-auto max-w-4xl w-full">
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-teal-800 flex items-center gap-2">
+                <FaUserCog className="h-8 w-8" />
+                Equipe Odontológica
+              </h1>
+              <p className="text-sm md:text-base text-teal-600 mt-1 max-w-2xl">
+                Gerencie médicos, assistentes e equipe administrativa da clínica.
+              </p>
+            </div>
+
+            <button className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+              <FaPlusCircle className="h-4 w-4" />
+              <span>Adicionar Funcionário</span>
+            </button>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 text-center">
+            <FaUser className="h-16 w-16 text-blue-400 mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-blue-700 mb-2">Nenhum funcionário cadastrado</h2>
+            <p className="text-blue-600 mb-4">
+              Você ainda não possui funcionários cadastrados em sua clínica.
+            </p>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+              Adicionar primeiro funcionário
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 bg-gradient-to-br from-blue-50 to-teal-50 p-4 sm:p-6 md:p-8">
@@ -68,11 +125,8 @@ export default async function FuncionariosPage() {
               Gerencie médicos, assistentes e equipe administrativa da clínica.
             </p>
           </div>
-          
-          <button className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
-            <FaPlusCircle className="h-4 w-4" />
-            <span>Adicionar Funcionário</span>
-          </button>
+
+          <ModalGeneric />
         </div>
 
         <div className="hidden md:block overflow-auto rounded-xl border border-teal-100 bg-white shadow-lg w-full">
@@ -103,22 +157,20 @@ export default async function FuncionariosPage() {
                   <TableCell className="px-6 py-4 text-teal-700">{funcionario.email}</TableCell>
                   <TableCell className="px-6 py-4">
                     <span
-                      className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-                        funcionario.role === 'admin'
+                      className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${funcionario.role === 'admin'
                           ? 'bg-blue-100 text-blue-800'
                           : 'bg-amber-100 text-amber-800'
-                      }`}
+                        }`}
                     >
                       {funcionario.role === 'admin' ? 'Administrador' : 'Colaborador'}
                     </span>
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
-                        funcionario.active
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${funcionario.active
                           ? 'bg-green-100 text-green-700'
                           : 'bg-red-100 text-red-700'
-                      }`}
+                        }`}
                     >
                       {funcionario.active ? (
                         <>
@@ -155,10 +207,10 @@ export default async function FuncionariosPage() {
           </Table>
         </div>
 
-        {/* Cards para mobile - Agora com 100% de largura */}
+        {/* Cards para mobile */}
         <div className="md:hidden grid grid-cols-1 gap-4 w-full">
           {funcionarios.map((funcionario) => (
-            <div 
+            <div
               key={funcionario.id}
               className="bg-white rounded-xl border border-teal-100 p-4 shadow-md hover:shadow-lg transition-shadow duration-200 w-full"
             >
@@ -172,7 +224,7 @@ export default async function FuncionariosPage() {
                     <p className="text-sm text-teal-600">{funcionario.email}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-2">
                   <button
                     className="p-1.5 hover:bg-teal-100 rounded-md transition-colors duration-200 cursor-pointer"
@@ -188,24 +240,22 @@ export default async function FuncionariosPage() {
                   </button>
                 </div>
               </div>
-              
+
               <div className="flex flex-wrap gap-2 mt-2">
                 <span
-                  className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-                    funcionario.role === 'admin'
+                  className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${funcionario.role === 'admin'
                       ? 'bg-blue-100 text-blue-800'
                       : 'bg-amber-100 text-amber-800'
-                  }`}
+                    }`}
                 >
                   {funcionario.role === 'admin' ? 'Administrador' : 'Colaborador'}
                 </span>
-                
+
                 <span
-                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
-                    funcionario.active
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${funcionario.active
                       ? 'bg-green-100 text-green-700'
                       : 'bg-red-100 text-red-700'
-                  }`}
+                    }`}
                 >
                   {funcionario.active ? (
                     <>
@@ -224,7 +274,6 @@ export default async function FuncionariosPage() {
           ))}
         </div>
 
-        {/* Rodapé informativo */}
         <div className="mt-8 text-center text-sm text-teal-600">
           <p>{funcionarios.length} {funcionarios.length === 1 ? 'funcionário cadastrado' : 'funcionários cadastrados'} em sua clínica</p>
         </div>
