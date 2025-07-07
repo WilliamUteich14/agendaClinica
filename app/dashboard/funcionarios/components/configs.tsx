@@ -17,6 +17,7 @@ export const funcionarioModalConfig = (
     ? {
         name: initialValues.name ?? "",
         email: initialValues.email ?? "",
+        password: initialValues.password ?? "",
         role: initialValues.role ?? "staff",
       }
     : undefined;
@@ -42,6 +43,12 @@ export const funcionarioModalConfig = (
         placeholder: "email@exemplo.com",
       },
       {
+        name: "password",
+        label: "Senha",
+        type: "password",
+        placeholder: "Senha12345",
+      },
+      {
         name: "role",
         label: "Cargo",
         type: "select",
@@ -54,7 +61,7 @@ export const funcionarioModalConfig = (
     ] as FieldConfig[],
     apiEndpoint: `${process.env.NEXT_URL}/api/agendamento/users`,
     urlRevalidate: ["/dashboard/funcionarios"],
-    tags: ["reloadUsers"],
+    //tags: ["reloadUsers"],
     method: action === "Adicionar" ? "POST" : "PUT",
     initialValues: initialValuesFormatted,
   };

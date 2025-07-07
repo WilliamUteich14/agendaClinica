@@ -25,7 +25,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import Form from "@/app/components/Form";
 import Submit from "@/app/components/Submit";
-import { ButtonAdicionarProps } from "@/app/utils/types/modalGeneric";
+import { ButtonAdicionarProps } from "@/utils/types/modalGeneric";
 
 export default function ButtonAdicionar({ config, params }: ButtonAdicionarProps) {
 
@@ -103,11 +103,11 @@ export default function ButtonAdicionar({ config, params }: ButtonAdicionarProps
             <AlertDialog>
                 <AlertDialogTrigger asChild>
                     {config.action === "Adicionar" ? (
-                        <Button variant="outline" className="bg-green-800 text-white hover:bg-green-600 font-semibold py-1 px-4 rounded-md transition duration-300 ease-in-out">
+                        <Button variant="outline" className="bg-green-800 cursor-pointer text-white hover:bg-green-600 font-semibold py-1 px-4 rounded-md transition duration-300 ease-in-out">
                             {config.action}
                         </Button>
                     ) : (
-                        <Button className="bg-blue-800 text-white hover:bg-blue-700 font-semibold py-1 px-3 rounded-md transition duration-300 ease-in-out">
+                        <Button className="bg-blue-800 cursor-pointer text-white hover:bg-blue-700 font-semibold py-1 px-3 rounded-md transition duration-300 ease-in-out">
                             {config.action}
                         </Button>
                     )}
@@ -132,7 +132,7 @@ export default function ButtonAdicionar({ config, params }: ButtonAdicionarProps
                                     </Label>
                                     {field.type === "select" && field.options ? (
                                         <Select name={field.name} defaultValue={field.options[0].value || undefined}>
-                                            <SelectTrigger className="w-[340px]">
+                                            <SelectTrigger className="w-[340px] cursor-pointer">
                                                 <SelectValue placeholder={field.placeholder} />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -160,10 +160,10 @@ export default function ButtonAdicionar({ config, params }: ButtonAdicionarProps
                             ))}
 
                             <AlertDialogFooter>
-                                <Submit className="bg-blue-800 w-full hover:bg-blue-700 text-white" type="submit">Salvar</Submit>
+                                <Submit className="bg-blue-800 w-full hover:bg-blue-700 text-white cursor-pointer" type="submit">Salvar</Submit>
                             </AlertDialogFooter>
                         </Form>
-                        <AlertDialogCancel className="bg-red-700 w-full text-white hover:bg-red-600 hover:textwhite hover:text-white">Fechar</AlertDialogCancel>
+                        <AlertDialogCancel className="bg-red-700 w-full text-white hover:bg-red-600 hover:textwhite hover:text-white cursor-pointer">Fechar</AlertDialogCancel>
                     </div>
                 </AlertDialogContent>
             </AlertDialog>
