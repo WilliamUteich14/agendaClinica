@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FiMenu, FiCalendar, FiFileText, FiUsers, FiUser, FiHome, FiSettings, FiLogOut } from "react-icons/fi";
 import { GiTooth } from "react-icons/gi";
+import { logoutAction } from "./buttonLogout";
 
 const primaryItems = [
   { label: "Home", href: "/dashboard", icon: FiHome },
@@ -25,6 +26,9 @@ export default function Sidebar({
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition()
+
+
 
   return (
     <div className="flex h-screen">
@@ -36,7 +40,7 @@ export default function Sidebar({
         {/* Header inside sidebar */}
         {/* Mobile header */}
         <div className="flex items-center justify-between px-6 py-4 lg:hidden border-b border-slate-700">
-         <div className="flex items-center gap-3"><GiTooth size={28} className="text-cyan-400" /><span className="text-2xl font-extrabold tracking-wide text-white">DentalCare</span></div>
+          <div className="flex items-center gap-3"><GiTooth size={28} className="text-cyan-400" /><span className="text-2xl font-extrabold tracking-wide text-white">DentalCare</span></div>
           <button
             className="p-2 rounded-md hover:bg-blue-600/40"
             onClick={() => setOpen(false)}
@@ -58,8 +62,8 @@ export default function Sidebar({
                 <Link
                   href={item.href}
                   className={`group flex items-center gap-4 rounded-md px-4 py-2 font-medium transition-colors duration-150 relative ${pathname === item.href
-                      ? "bg-slate-800 text-white before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-cyan-400"
-                      : "hover:bg-slate-800 hover:text-white"
+                    ? "bg-slate-800 text-white before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-cyan-400"
+                    : "hover:bg-slate-800 hover:text-white"
                     }`}
                   onClick={() => setOpen(false)}
                 >
@@ -78,8 +82,8 @@ export default function Sidebar({
                 <Link
                   href={item.href}
                   className={`group flex items-center gap-4 rounded-md px-4 py-2 font-medium transition-colors duration-150 relative ${pathname === item.href
-                      ? "bg-slate-800 text-white before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-cyan-400"
-                      : "hover:bg-slate-800 hover:text-white"
+                    ? "bg-slate-800 text-white before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-cyan-400"
+                    : "hover:bg-slate-800 hover:text-white"
                     }`}
                   onClick={() => setOpen(false)}
                 >
@@ -91,9 +95,10 @@ export default function Sidebar({
 
             <li>
               <button
-                className="group cursor-pointer w-full flex items-center gap-4 rounded-md px-4 py-2 font-medium text-left text-slate-200 transition-colors duration-150 hover:bg-slate-800 hover:text-white"
+                onClick={() => logoutAction()}
+                className="group w-full cursor-pointer flex items-center gap-4 rounded-md px-4 py-2 font-medium text-left text-slate-200 transition-colors duration-150 hover:bg-slate-800 hover:text-white"
               >
-                <FiLogOut size={20} className="text-red-400 group-hover:text-red-800" />
+                <FiLogOut size={20} className="text-red-400 group-hover:text-red-600" />
                 <span>Sair</span>
               </button>
             </li>
@@ -103,16 +108,18 @@ export default function Sidebar({
 
       <div className="flex-1 flex flex-col">
         {/* Topbar (mobile) */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-gray-200 lg:hidden bg-white">
+        <header className="flex items-center cursor-pointer justify-between px-4 py-3 border-b border-gray-200 lg:hidden bg-white">
           <button
-            className="p-2 text-gray-700 rounded-md hover:bg-gray-100"
-            onClick={() => setOpen(true)}
-            aria-label="Abrir menu"
+            onClick={() => logoutAction()}
+            className="group flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:underline"
           >
-            <FiMenu size={20} />
+            <FiLogOut size={18} className="text-red-400 group-hover:text-red-600" />
+            <span>Sair</span>
           </button>
-          <div className="flex items-center gap-2"><GiTooth className="text-cyan-400" size={20} /><span className="font-semibold">DentalCare</span></div>
-          <div></div>
+          <div className="flex items-center gap-2">
+            <GiTooth className="text-cyan-400" size={20} />
+            <span className="font-semibold">DentalCare</span>
+          </div>
         </header>
 
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6">{children}</main>
