@@ -1,15 +1,26 @@
-"use client";
-import React, { useEffect, useState } from "react";
 
-// Minimal table primitives (replace when shadcn components estiverem disponíveis)
-const Table = (props: React.HTMLAttributes<HTMLTableElement>) => <table {...props} />;
-const TableHeader = (props: React.HTMLAttributes<HTMLTableSectionElement>) => <thead {...props} />;
-const TableBody = (props: React.HTMLAttributes<HTMLTableSectionElement>) => <tbody {...props} />;
-const TableRow = (props: React.HTMLAttributes<HTMLTableRowElement>) => <tr {...props} />;
-const TableHead = (props: React.ThHTMLAttributes<HTMLTableCellElement>) => <th {...props} />;
-const TableCell = (props: React.TdHTMLAttributes<HTMLTableCellElement>) => <td {...props} />;
+import React from "react";
+import { cookies } from "next/headers";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 import { FaPen, FaTrash, FaPlusCircle, FaUser, FaUserCog } from 'react-icons/fa';
+
+interface ApiUser {
+  _id?: string;
+  id?: string;
+  name?: string;
+  email: string;
+  role?: string;
+  active?: boolean;
+}
 
 interface Funcionario {
   id: string;
@@ -19,29 +30,34 @@ interface Funcionario {
   active: boolean;
 }
 
+export default async function FuncionariosPage() {
+  const cookieStore = cookies();
+  const cookieHeader = cookieStore.toString();
 
+  const res = await fetch(`${process.env.NEXT_URL}/api/agendamento/users`, {
+    headers: {
+      Cookie: cookieHeader,
+    },
+    cache: "no-store",
+  });
 
-export default function FuncionariosPage() {
-  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/agendamento/funcionarios", { credentials: "include", cache: "no-store" })
-      .then(async (res) => {
-        if (!res.ok) throw new Error("Erro ao buscar funcionários");
-        return res.json();
-      })
-      .then((data) => setFuncionarios(data as Funcionario[]))
-      .catch(() => setFuncionarios([]))
-      .finally(() => setLoading(false));
-  }, []);
-
-
+  let apiData: ApiUser[] = [];
+  if (res.ok) {
+    try {
+      apiData = await res.json();
+    } catch {}
+  }
+  const funcionarios: Funcionario[] = apiData.map((u) => ({
+    id: (u.id || u._id || u.email) as string,
+    name: u.name ?? u.email.split("@")[0],
+    email: u.email,
+    role: (u.role === "ADMIN" || u.role === "admin") ? "admin" : "staff",
+    active: u.active ?? true,
+  }));
 
   return (
     <div className="flex-1 bg-gradient-to-br from-blue-50 to-teal-50 p-4 sm:p-6 md:p-8">
       <div className="mx-auto w-full">
-        {/* Cabeçalho */}
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-teal-800 flex items-center gap-2">
@@ -59,7 +75,6 @@ export default function FuncionariosPage() {
           </button>
         </div>
 
-        {/* Tabela para desktop - Agora ocupando 100% do espaço */}
         <div className="hidden md:block overflow-auto rounded-xl border border-teal-100 bg-white shadow-lg w-full">
           <Table className="w-full">
             <TableHeader className="bg-teal-500 text-white">
