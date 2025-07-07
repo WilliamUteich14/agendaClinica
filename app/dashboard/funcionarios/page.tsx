@@ -15,6 +15,7 @@ import {
 import { FaTrash, FaUser, FaUserCog } from 'react-icons/fa';
 import { AddFuncionarioButton, funcionarioModalConfig } from "./components/configs";
 import ModalGeneric from "../components/modalGeneric";
+import ModalDelete from "../components/modalDelete";
 
 
 interface ApiUser {
@@ -153,8 +154,8 @@ export default async function FuncionariosPage() {
                   <TableCell className="px-6 py-4">
                     <span
                       className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${funcionario.role === 'admin'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-amber-100 text-amber-800'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-amber-100 text-amber-800'
                         }`}
                     >
                       {funcionario.role === 'admin' ? 'Administrador' : 'Colaborador'}
@@ -163,8 +164,8 @@ export default async function FuncionariosPage() {
                   <TableCell className="px-6 py-4">
                     <span
                       className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${funcionario.active
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-red-100 text-red-700'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
                         }`}
                     >
                       {funcionario.active ? (
@@ -183,12 +184,15 @@ export default async function FuncionariosPage() {
                   <TableCell className="px-6 py-4 text-right">
                     <div className="flex justify-end items-center gap-3">
                       <ModalGeneric config={funcionarioModalConfig("Editar", funcionario)} params={funcionario.id} />
-                      <button
-                        className="p-2 hover:bg-rose-100 rounded-md transition-colors duration-200 cursor-pointer"
-                        title="Excluir"
-                      >
-                        <FaTrash className="h-5 w-5 text-rose-500" />
-                      </button>
+                      <ModalDelete
+                        config={{
+                          id: funcionario.id,
+                          title: "Tem certeza que deseja excluir esse Funcionário?",
+                          description: "Esta ação não pode ser desfeita. O funcionário será removida permanentemente. Deseja continuar?",
+                          apiEndpoint: `${process.env.NEXT_URL}/api/agendamento/users/${funcionario.id}`,
+                          urlRevalidate: ["/dashboard/funcionarios"],
+                        }}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -229,8 +233,8 @@ export default async function FuncionariosPage() {
               <div className="flex flex-wrap gap-2 mt-2">
                 <span
                   className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${funcionario.role === 'admin'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-amber-100 text-amber-800'
+                    ? 'bg-blue-100 text-blue-800'
+                    : 'bg-amber-100 text-amber-800'
                     }`}
                 >
                   {funcionario.role === 'admin' ? 'Administrador' : 'Colaborador'}
@@ -238,8 +242,8 @@ export default async function FuncionariosPage() {
 
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${funcionario.active
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-700'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
                     }`}
                 >
                   {funcionario.active ? (

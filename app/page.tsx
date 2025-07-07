@@ -3,10 +3,18 @@ import { redirect } from "next/navigation";
 import FormLogin from "./components/formLogin";
 
 export default async function Home() {
-  const token = (await cookies()).get("token")?.value;
-  
-  if (token) {
-    redirect("/dashboard");
+  const cookieStore = cookies();
+  const token = (await cookieStore).get("token")?.value;
+
+  const res = await fetch(`${process.env.NEXT_URL}/api/agendamento/auth/verifyToken`, {
+    headers: {
+      Cookie: `token=${token}`,
+    },
+    cache: "no-store", 
+  });
+
+  if(res.ok) {
+    return redirect("/dashboard")
   }
 
   return (

@@ -16,12 +16,13 @@ export const funcionarioModalConfig = (
 ) => {
   const initialValuesFormatted: { [key: string]: string } | undefined = initialValues
     ? {
-        name: initialValues.name ?? "",
-        email: initialValues.email ?? "",
-        password: initialValues.password ?? "",
-        role: initialValues.role ?? "staff",
-      }
-    : undefined;
+      name: initialValues.name ?? "",
+      email: initialValues.email ?? "",
+      password: initialValues.password ?? "",
+      role: initialValues.role ?? "staff",
+      active: initialValues.active?.toString() ?? "false", 
+    }
+  : undefined;
 
   return {
     title: `${action} Funcionário`,
@@ -57,6 +58,16 @@ export const funcionarioModalConfig = (
         options: [
           { value: "admin", label: "Administrador" },
           { value: "staff", label: "Colaborador" },
+        ],
+      },
+      {
+        name: "active",
+        label: "Ativo/Inativo",
+        type: "select",
+        placeholder: "Selecione o Status",
+        options: [
+          { value: "true", label: "Ativo" },
+          { value: "false", label: "Inativo" },
         ],
       },
     ] as FieldConfig[],

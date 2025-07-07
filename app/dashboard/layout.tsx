@@ -4,43 +4,30 @@ import Sidebar from "./components/sidebar";
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-
+}) {
   const cookieStore = cookies();
   const token = (await cookieStore).get("token")?.value;
 
-  try {
-    const validaLogin = await fetch(`${process.env.NEXT_URL}/api/agendamento/auth/verifyToken`, {
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: `token=${token}`, 
-      },
-    });
+  if (!token) {
+    return redirect("/");
+  }
 
-    if (!validaLogin.ok) {
-      throw new Error("Token inválido ou expirado");
-    }
-  } catch (error) {
-    try {
-      await fetch(`${process.env.NEXT_URL}/api/agendamento/auth/logout`, {
-        method: "POST",
-        headers: {
-          Cookie: `token=${token}`, 
-        },
-      });
-    } catch (logoutError) {
-      console.error("Falha ao tentar logout:", logoutError);
-    }
+  const res = await fetch(`${process.env.NEXT_URL}/api/agendamento/auth/verifyToken`, {
+    headers: {
+      Cookie: `token=${token}`,
+    },
+    cache: "no-store", 
+  });
+
+  if (!res.ok) {
     return redirect("/");
   }
 
   return (
     <html lang="en">
-      <body
-        className="antialiased"
-      >
+      <body className="antialiased">
         <Sidebar>{children}</Sidebar>
       </body>
     </html>
