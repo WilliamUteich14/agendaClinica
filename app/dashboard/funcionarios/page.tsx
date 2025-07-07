@@ -12,8 +12,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { FaPen, FaTrash, FaUser, FaUserCog, FaExclamationTriangle } from 'react-icons/fa';
-import { AddFuncionarioButton } from "./components/configs";
+import { FaTrash, FaUser, FaUserCog } from 'react-icons/fa';
+import { AddFuncionarioButton, funcionarioModalConfig } from "./components/configs";
+import ModalGeneric from "../components/modalGeneric";
 
 
 interface ApiUser {
@@ -181,12 +182,7 @@ export default async function FuncionariosPage() {
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right">
                     <div className="flex justify-end items-center gap-3">
-                      <button
-                        className="p-2 hover:bg-teal-100 rounded-md transition-colors duration-200 cursor-pointer"
-                        title="Editar"
-                      >
-                        <FaPen className="h-5 w-5 text-teal-600" />
-                      </button>
+                      <ModalGeneric config={funcionarioModalConfig("Editar", funcionario)} params={funcionario.id} />
                       <button
                         className="p-2 hover:bg-rose-100 rounded-md transition-colors duration-200 cursor-pointer"
                         title="Excluir"
@@ -220,12 +216,7 @@ export default async function FuncionariosPage() {
                 </div>
 
                 <div className="flex gap-2">
-                  <button
-                    className="p-1.5 hover:bg-teal-100 rounded-md transition-colors duration-200 cursor-pointer"
-                    title="Editar"
-                  >
-                    <FaPen className="h-4 w-4 text-teal-600" />
-                  </button>
+                  <ModalGeneric config={funcionarioModalConfig("Editar", funcionario)} params={funcionario.id} />
                   <button
                     className="p-1.5 hover:bg-rose-100 rounded-md transition-colors duration-200 cursor-pointer"
                     title="Excluir"

@@ -69,6 +69,10 @@ export default function ButtonAdicionar({ config, params }: ButtonAdicionarProps
 
         for (const [key, value] of Object.entries(data)) {
             if (!value) {
+                if (key === "password" && method !== "POST") {
+                    delete data.password;
+                    continue;
+                }
                 return { error: `O campo ${key} não pode estar vazio.` };
             }
         }

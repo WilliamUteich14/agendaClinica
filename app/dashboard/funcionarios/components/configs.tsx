@@ -2,6 +2,7 @@ import ModalGeneric from "../../components/modalGeneric";
 import { FieldConfig } from "@/utils/types/modalGeneric";
 
 interface FuncionarioInitialValues {
+  id?: string;
   name?: string;
   email?: string;
   role?: "admin" | "staff";
@@ -59,7 +60,9 @@ export const funcionarioModalConfig = (
         ],
       },
     ] as FieldConfig[],
-    apiEndpoint: `${process.env.NEXT_URL}/api/agendamento/users`,
+    apiEndpoint: action === "Editar" && initialValues?.id
+      ? `${process.env.NEXT_URL}/api/agendamento/users/${initialValues.id}`
+      : `${process.env.NEXT_URL}/api/agendamento/users`,
     urlRevalidate: ["/dashboard/funcionarios"],
     //tags: ["reloadUsers"],
     method: action === "Adicionar" ? "POST" : "PUT",

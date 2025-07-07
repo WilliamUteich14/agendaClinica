@@ -57,7 +57,6 @@ users.post('/', async (c) => {
   return c.json({ insertedId: result.insertedId }, 201);
 });
 
-
 users.put('/:id', async (c) => {
   const id = parseId(c.req.param('id'));
   if (!id) return c.json('ID inválido', 400);
@@ -77,6 +76,7 @@ users.put('/:id', async (c) => {
 
   return c.json({ modifiedCount: result.modifiedCount });
 });
+
 
 users.delete('/:id', async (c) => {
   const id = parseId(c.req.param('id'));
