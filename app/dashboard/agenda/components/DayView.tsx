@@ -1,10 +1,10 @@
+// components/agenda/DayView.tsx
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FiClock } from 'react-icons/fi';
 import { AppointmentCard } from './AppointmentCard';
 import { Skeleton } from '@/components/ui/skeleton';
-
 
 interface DayViewProps {
   loading: boolean;

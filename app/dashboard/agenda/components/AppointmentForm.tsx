@@ -1,13 +1,15 @@
+// components/agenda/AppointmentForm.tsx
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { FiCheck, FiEdit, FiLoader, FiPlus, FiX } from 'react-icons/fi';
 import { format } from 'date-fns';
-import { Textarea } from '@/components/ui/textarea';
+import { useMemo } from 'react';
 
 interface AppointmentFormProps {
   open: boolean;
@@ -30,8 +32,8 @@ export const AppointmentForm = ({
   onSubmit,
   processing
 }: AppointmentFormProps) => {
-
-  const generateTimeSlots = () => {
+  // Gerar slots de horário disponíveis com memo
+  const timeSlots = useMemo(() => {
     const slots = [];
     const dateForSlots = editingAppointment?.date || format(currentDate, "yyyy-MM-dd");
     const bookedAppointments = allAppointments.filter(a => a.date === dateForSlots);
@@ -60,9 +62,7 @@ export const AppointmentForm = ({
     }
     
     return slots;
-  };
-
-  const timeSlots = generateTimeSlots();
+  }, [allAppointments, currentDate, editingAppointment]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

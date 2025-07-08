@@ -1,11 +1,12 @@
+// components/agenda/WeekView.tsx
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format, isToday, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useMemo } from 'react';
 import { FiClock } from 'react-icons/fi';
+import { useMemo } from 'react';
 
 interface WeekViewProps {
   loading: boolean;

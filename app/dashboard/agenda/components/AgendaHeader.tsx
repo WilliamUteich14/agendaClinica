@@ -1,8 +1,10 @@
+// components/agenda/AgendaHeader.tsx
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { FiChevronLeft, FiChevronRight, FiClock } from 'react-icons/fi';
-import { format } from 'date-fns';
+import { format, isToday } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface AgendaHeaderProps {
   currentDate: Date;
@@ -47,7 +49,7 @@ export const AgendaHeader = ({
           
           <Button
             onClick={onToday}
-            variant={viewMode === 'day' ? 'default' : 'secondary'}
+            variant={isToday(currentDate) ? 'default' : 'secondary'}
           >
             Hoje
           </Button>

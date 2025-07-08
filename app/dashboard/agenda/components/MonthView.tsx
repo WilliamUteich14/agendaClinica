@@ -1,10 +1,11 @@
+// components/agenda/MonthView.tsx
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format, isToday, isSameMonth, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
-import { useMemo } from 'react';
 import { FiClock } from 'react-icons/fi';
+import { useMemo } from 'react';
 
 interface MonthViewProps {
   loading: boolean;
