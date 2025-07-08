@@ -1,4 +1,3 @@
-//users.ts
 import { Hono } from "hono";
 import { getUserCollection } from "../db/db";
 import bcrypt from 'bcrypt';
@@ -71,7 +70,7 @@ users.put('/:id', async (c) => {
   if (!userToFind) return c.json('Usuário nao encontrado', 404);
 
   const data = await c.req.json();
-  console.log("recebendo data", data)
+
   if (data.password) {
     data.password = await bcrypt.hash(data.password, 10);
   }

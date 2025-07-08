@@ -7,7 +7,7 @@ interface FuncionarioInitialValues {
   email?: string;
   role?: "admin" | "staff";
   password?: string;
-  active?: boolean;
+  active?: "true" | "false";
 }
 
 export const funcionarioModalConfig = (
@@ -20,7 +20,7 @@ export const funcionarioModalConfig = (
       email: initialValues.email ?? "",
       password: initialValues.password ?? "",
       role: initialValues.role ?? "staff",
-      active: initialValues.active?.toString() ?? "false", 
+      active: initialValues.active?.toString() ?? "true", 
     }
   : undefined;
 

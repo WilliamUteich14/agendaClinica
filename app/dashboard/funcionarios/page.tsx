@@ -24,7 +24,7 @@ interface ApiUser {
   name?: string;
   email: string;
   role?: string;
-  active?: boolean;
+  active: "true" | "false";
 }
 
 interface Funcionario {
@@ -32,7 +32,7 @@ interface Funcionario {
   name: string;
   email: string;
   role: 'admin' | 'staff';
-  active: boolean;
+  active: "true" | "false";
 }
 
 export default async function FuncionariosPage() {
@@ -101,7 +101,6 @@ export default async function FuncionariosPage() {
             <p className="text-blue-600 mb-4">
               Você ainda não possui funcionários cadastrados em sua clínica.
             </p>
-            <AddFuncionarioButton />
           </div>
         </div>
       </div>
@@ -163,12 +162,12 @@ export default async function FuncionariosPage() {
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${funcionario.active
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${funcionario.active === 'true'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-700'
                         }`}
                     >
-                      {funcionario.active ? (
+                      {funcionario.active === 'true' ? (
                         <>
                           <span className="h-2 w-2 rounded-full bg-green-500"></span>
                           Ativo
@@ -180,6 +179,7 @@ export default async function FuncionariosPage() {
                         </>
                       )}
                     </span>
+
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right">
                     <div className="flex justify-end items-center gap-3">
@@ -241,7 +241,7 @@ export default async function FuncionariosPage() {
                 </span>
 
                 <span
-                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${funcionario.active
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${funcionario.active == "true"
                     ? 'bg-green-100 text-green-700'
                     : 'bg-red-100 text-red-700'
                     }`}
