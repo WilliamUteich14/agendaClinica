@@ -27,7 +27,20 @@ export interface Agenda {
     title: string;
     description: string;
     date: Date;
-    user: string; //User
-    client: string; //Client
+    user: string; 
+    client: string; 
+}
+
+export interface Appointment {
+  _id?: string;
+  date: string; 
+  time: string; 
+  title: string;
+  completed?: boolean;
+  clientId: string;
+  clientName: string;
+  value: number;
+  note?: string;
+  duration?: number;
 }
 

@@ -1,4 +1,4 @@
-import AgendaClient from "./AgendaClient";
+import AgendaClient from "./components/AgendaClient";
 
 export default function AgendaPage() {
   return (

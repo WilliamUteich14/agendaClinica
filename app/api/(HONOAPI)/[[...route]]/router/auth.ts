@@ -21,7 +21,8 @@ auth.get('/seed', async (c) => {
     const userToadd = await usersCollection.insertOne({
         email: 'williamuteich14@gmail.com',
         password: password,
-        role: 'ADMIN'
+        role: 'ADMIN',
+        active: "true"
     });
     return c.json(userToadd.insertedId, 201);
 })
