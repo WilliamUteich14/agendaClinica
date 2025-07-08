@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { ObjectId } from "mongodb";
 import { setCookie, getCookie } from "hono/cookie";
 import { getUserCollection } from "../db/db";
 import { gerarToken, validarMailToken, validarToken } from "../utils/jwt";
@@ -34,6 +35,10 @@ auth.post('/login', async (c) => {
       throw new HTTPException(401, { message: 'Credenciais inválidas' });
     }
 
+    if(!user.active || user.active === "false"){
+      throw new HTTPException(403, { message: 'Usuário inativo' });
+    }
+
     const isValidPass = await bcrypt.compare(password, user.password);
 
     if(!isValidPass){
@@ -65,9 +70,15 @@ auth.get('/verifyToken', async (c) => {
     }
   
     try {
-      const isValid = await validarToken(token);
-      if (!isValid) {
+      const decoded: any = await validarToken(token);
+      if (!decoded) {
         return c.json({ message: 'Token inválido ou expirado' }, 401);
+      }
+      // Verifica se o usuário ainda está ativo
+      const usersCollection = await getUserCollection();
+      const user = await usersCollection.findOne({ _id: new ObjectId(decoded._id) }, { projection: { active: 1 } });
+      if(!user || !user.active || user.active === "false"){
+        return c.json({ message: 'Usuário inativo' }, 403);
       }
     } catch {
       return c.json({ message: 'Token inválido ou expirado' }, 401);
