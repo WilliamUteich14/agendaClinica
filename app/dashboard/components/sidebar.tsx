@@ -3,20 +3,15 @@
 import React, { useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FiMenu, FiCalendar, FiFileText, FiUsers, FiUser, FiHome, FiSettings, FiLogOut } from "react-icons/fi";
+import { FiCalendar, FiUsers, FiUser, FiHome, FiSettings, FiLogOut } from "react-icons/fi";
 import { GiTooth } from "react-icons/gi";
 import { logoutAction } from "./buttonLogout";
 
 const primaryItems = [
   { label: "Home", href: "/dashboard", icon: FiHome },
   { label: "Agenda", href: "/dashboard/agenda", icon: FiCalendar },
-  { label: "Prontuário", href: "/dashboard/prontuario", icon: FiFileText },
   { label: "Pacientes", href: "/dashboard/pacientes", icon: FiUsers },
   { label: "Funcionários", href: "/dashboard/funcionarios", icon: FiUser },
-];
-
-const secondaryItems = [
-  { label: "Configurações", href: "/dashboard/configuracoes", icon: FiSettings },
 ];
 
 export default function Sidebar({
@@ -77,22 +72,6 @@ export default function Sidebar({
 
         <div className="mt-auto px-3 py-4 border-t border-slate-700">
           <ul className="space-y-1">
-            {secondaryItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`group flex items-center gap-4 rounded-md px-4 py-2 font-medium transition-colors duration-150 relative ${pathname === item.href
-                    ? "bg-slate-800 text-white before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-cyan-400"
-                    : "hover:bg-slate-800 hover:text-white"
-                    }`}
-                  onClick={() => setOpen(false)}
-                >
-                  <item.icon size={20} className="text-cyan-400 group-hover:text-cyan-300" />
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            ))}
-
             <li>
               <button
                 onClick={() => logoutAction()}
